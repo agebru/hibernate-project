@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import com.hibernate.repository.specification.Specification;
 
@@ -20,7 +21,7 @@ public abstract class JpaCrudRepository<T> implements CrudRepository<T> {
 
     private String alias;
 
-    private final String SELECT_QUERY = "SELECT %s FROM %s %s";
+    private final String SELECT_QUERY = "SELECT %s FROM %s %s ";
 
     public JpaCrudRepository(final Class<T> clazz, final String alias) {
         this.clazz = clazz;
@@ -28,16 +29,19 @@ public abstract class JpaCrudRepository<T> implements CrudRepository<T> {
     }
 
     @Override
+    @Transactional
     public void save(final T entity) {
         entityManager.persist(entity);
     }
 
     @Override
+    @Transactional
     public T update(final T entity) {
         return entityManager.merge(entity);
     }
 
     @Override
+    @Transactional
     public void delete(final T entity) {
         entityManager.remove(entity);
     }

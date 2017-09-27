@@ -2,6 +2,8 @@ package com.hibernate.repository.config;
 
 import java.util.Properties;
 
+import javax.naming.NamingException;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.AbstractEntityManagerFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author ivanovaolyaa
@@ -43,6 +47,15 @@ public class JpaRepositoryConfig {
     @Bean
     public JpaVendorAdapter jpaVendorAdapter() {
         return new HibernateJpaVendorAdapter();
+    }
+
+    @Bean
+    @Autowired
+    public PlatformTransactionManager getTransactionManager(EntityManagerFactory emf) throws NamingException {
+        JpaTransactionManager jpaTransaction = new JpaTransactionManager();
+        jpaTransaction.setEntityManagerFactory(emf);
+
+        return jpaTransaction;
     }
 
     @Bean
