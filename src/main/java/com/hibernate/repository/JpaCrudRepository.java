@@ -1,5 +1,6 @@
 package com.hibernate.repository;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -55,13 +56,12 @@ public abstract class JpaCrudRepository<T> implements CrudRepository<T> {
     @Override
     @SuppressWarnings("unchecked")
     public List<T> findBySpecification(final Specification specification) {
-        List<T> result;
+        List<T> result = Collections.emptyList();
         try {
             result = entityManager.createQuery(String.format(SELECT_QUERY, alias, clazz.getSimpleName(),
                     alias) + specification.toSqlClause(alias)).getResultList();
         } catch (final Exception ex) {
             logger.error("Caught: " + ex);
-            result = null;
         }
 
         return result;

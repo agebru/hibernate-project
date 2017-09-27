@@ -61,8 +61,16 @@ public class User {
     @JoinTable(name = "user_role")
     private Set<Role> roles = Sets.newHashSet();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Address> addresses;
+
     public void addRole(Role role) {
         roles.add(role);
+    }
+
+    public void addAddress(Address address) {
+        addresses.add(address);
+        address.setUser(this);
     }
 
 }

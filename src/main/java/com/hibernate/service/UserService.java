@@ -13,6 +13,8 @@ public interface UserService {
 
     void save(User user);
 
+    User update(User user);
+
     void delete(User user);
 
     List<User> findAll();

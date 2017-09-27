@@ -29,6 +29,11 @@ public class JpaUserService implements UserService {
     }
 
     @Override
+    public User update(final User user) {
+        return userRepository.update(user);
+    }
+
+    @Override
     public void delete(final User user) {
         userRepository.delete(user);
     }

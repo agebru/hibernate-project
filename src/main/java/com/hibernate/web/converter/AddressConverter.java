@@ -1,7 +1,7 @@
 package com.hibernate.web.converter;
 
-import com.hibernate.entity.User;
-import com.hibernate.web.dto.UserDto;
+import com.hibernate.entity.Address;
+import com.hibernate.web.dto.AddressDto;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,20 +13,20 @@ import org.springframework.stereotype.Component;
  * @version 9/27/2017
  */
 @Component
-@Qualifier("userConverter")
-public class UserConverter implements Converter<User, UserDto> {
+@Qualifier("addressConverter")
+public class AddressConverter implements Converter<Address, AddressDto> {
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Override
-    public User convertToEntity(final UserDto dto) {
-        return modelMapper.map(dto, User.class);
+    public Address convertToEntity(final AddressDto dto) {
+        return modelMapper.map(dto, Address.class);
     }
 
     @Override
-    public UserDto convertToDto(final User entity) {
-        return modelMapper.map(entity, UserDto.class);
+    public AddressDto convertToDto(final Address entity) {
+        return modelMapper.map(entity, AddressDto.class);
     }
 
 }
