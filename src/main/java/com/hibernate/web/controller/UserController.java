@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import com.hibernate.entity.User;
+import com.hibernate.service.RoleService;
 import com.hibernate.service.UserService;
 import com.hibernate.web.converter.Converter;
 import com.hibernate.web.dto.UserDto;
@@ -30,6 +31,9 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private RoleService roleService;
+
+    @Autowired
     private Converter<User, UserDto> userConverter;
 
     @PostMapping("/register")
@@ -43,6 +47,8 @@ public class UserController {
         }
 
         final User user = userConverter.convertToEntity(userDto);
+        user.addRole(roleService.findRoleByName(userDto.getRoleName()));
+
         userService.save(user);
     }
 

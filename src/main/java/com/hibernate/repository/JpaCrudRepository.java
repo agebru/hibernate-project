@@ -3,10 +3,14 @@ package com.hibernate.repository;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import com.hibernate.repository.specification.Specification;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ivanovaolyaa
@@ -22,6 +26,8 @@ public abstract class JpaCrudRepository<T> implements CrudRepository<T> {
     private String alias;
 
     private final String SELECT_QUERY = "SELECT %s FROM %s %s ";
+
+    private Logger logger = LoggerFactory.getLogger(JpaCrudRepository.class);
 
     public JpaCrudRepository(final Class<T> clazz, final String alias) {
         this.clazz = clazz;
@@ -49,8 +55,16 @@ public abstract class JpaCrudRepository<T> implements CrudRepository<T> {
     @Override
     @SuppressWarnings("unchecked")
     public List<T> findBySpecification(final Specification specification) {
-        return entityManager.createQuery(String.format(SELECT_QUERY, alias, clazz.getSimpleName(), alias) +
-                specification.toSqlClause(alias)).getResultList();
+        List<T> result;
+        try {
+            result = entityManager.createQuery(String.format(SELECT_QUERY, alias, clazz.getSimpleName(),
+                    alias) + specification.toSqlClause(alias)).getResultList();
+        } catch (final Exception ex) {
+            logger.error("Caught: " + ex);
+            result = null;
+        }
+
+        return result;
     }
 
     @Override

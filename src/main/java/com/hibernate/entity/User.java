@@ -57,4 +57,12 @@ public class User {
     @Column(name="last_name")
     private String lastName;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role")
+    private Set<Role> roles = Sets.newHashSet();
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
 }
