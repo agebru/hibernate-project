@@ -64,6 +64,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Address> addresses;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private UserDetails userDetails;
+
     public void addRole(Role role) {
         roles.add(role);
     }
@@ -71,6 +75,11 @@ public class User {
     public void addAddress(Address address) {
         addresses.add(address);
         address.setUser(this);
+    }
+
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
+        userDetails.setUser(this);
     }
 
 }

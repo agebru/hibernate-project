@@ -1,27 +1,26 @@
 package com.hibernate.web.controller;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import com.hibernate.entity.Address;
 import com.hibernate.entity.User;
+import com.hibernate.entity.UserDetails;
 import com.hibernate.service.AddressService;
 import com.hibernate.service.RoleService;
 import com.hibernate.service.UserService;
 import com.hibernate.web.converter.Converter;
 import com.hibernate.web.dto.AddressDto;
+import com.hibernate.web.dto.UserDetailsDto;
 import com.hibernate.web.dto.UserDto;
 import com.hibernate.web.exception.DuplicateEmailException;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +43,9 @@ public class UserController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private ModelMapper modelMapper;  // TODO: refactor using Converter and ModelMapper in the same class
 
     @Autowired
     private Converter<User, UserDto> userConverter;
@@ -76,6 +78,17 @@ public class UserController {
         address.setUser(user);
         addressService.save(address);
         // equivalent: user.addAddress(address); userService.update(user);
+    }
+
+    @PostMapping("/details")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public void addUserDetails(@RequestBody @Valid UserDetailsDto userDetailsDto, Principal principal) {
+        final User user = userService.findUserByEmail(principal.getName());
+        final UserDetails userDetails = modelMapper.map(userDetailsDto, UserDetails.class);
+
+        user.setUserDetails(userDetails);
+        userService.update(user);
     }
 
     private boolean isPasswordConfirmed(final UserDto userDto) {
