@@ -38,6 +38,9 @@ public class UserDetails {
     @Column(name = "id_number")
     private String identificationNumber;
 
+    @Embedded
+    private Passport passport;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumns({  // User class has composite primary key
             @JoinColumn(name = "user_id"),

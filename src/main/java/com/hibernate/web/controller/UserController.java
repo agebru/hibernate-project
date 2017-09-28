@@ -2,10 +2,13 @@ package com.hibernate.web.controller;
 
 import java.security.Principal;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
 import com.hibernate.entity.Address;
+import com.hibernate.entity.Passport;
 import com.hibernate.entity.User;
 import com.hibernate.entity.UserDetails;
 import com.hibernate.service.AddressService;
@@ -45,7 +48,7 @@ public class UserController {
     private RoleService roleService;
 
     @Autowired
-    private ModelMapper modelMapper;  // TODO: refactor using Converter and ModelMapper in the same class
+    private Converter<UserDetails, UserDetailsDto> userDetailsConverter;
 
     @Autowired
     private Converter<User, UserDto> userConverter;
@@ -85,7 +88,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public void addUserDetails(@RequestBody @Valid UserDetailsDto userDetailsDto, Principal principal) {
         final User user = userService.findUserByEmail(principal.getName());
-        final UserDetails userDetails = modelMapper.map(userDetailsDto, UserDetails.class);
+        final UserDetails userDetails = userDetailsConverter.convertToEntity(userDetailsDto);
 
         user.setUserDetails(userDetails);
         userService.update(user);
